@@ -66,6 +66,39 @@ function describepids(; remote=0)
     describepids(pids; filterfn=filterfn)
 end
 
+# similar to describepids. But does not include process 1 when working
+# on a cluster. Give a list that works well when initializing SharedArray.
+function get_topo()
+  hosts = []
+  workerID = []
+
+  for i in workers()
+          host = fetch(@spawnat i (gethostname()))
+          push!(hosts, host)
+          push!(workerID, i)
+  end
+
+  listHosts = unique(hosts)
+  dictHosts = Dict{Int64,Array{Int64,1}}()
+
+  for (hostIndex, host) in enumerate(listHosts)
+
+          listWorkers = []
+
+          for (i, hostTarget) in enumerate(hosts)
+                  if hostTarget == host
+                          append!(listWorkers, workerID[i])
+                  end
+          end
+
+          dictHosts[hostIndex] = listWorkers
+  end
+
+  return dictHosts
+
+end
+
+
 function localpids()
     topo = describepids(remote=1)
     topo[collect(keys(topo))[1]]

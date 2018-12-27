@@ -2,7 +2,7 @@
 module ClusterUtils
 
 export lookup, filterpaths, dictify, save, load
-export describepids, localpids, invtopology, chunkit
+export describepids, get_topo, localpids, invtopology, chunkit
 export Doable, sow, reap, reaprefs
 export @reap, @sow
 export getrepresentation, display, broadcast_shared
@@ -17,4 +17,3 @@ include("experimental.jl") #other styles of message passing, not tested as much
 include("patches.jl") #patches for issues to do with HPC
 
 end  #module ClusterUtils
-
