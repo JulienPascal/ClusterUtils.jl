@@ -48,7 +48,7 @@ end
 
 @doc """
 Return information about the resources (pids) available to us grouped by the machine they are running on.\n
-keyword argument: remote=0 (default) specifies remote machines; remote=1 the local machine; remote=2 all machines.\n 
+keyword argument: remote=0 (default) specifies remote machines; remote=1 the local machine; remote=2 all machines.\n
 length(topo) gives the number of unique nodes.\n
 keys(topo) gives the id of a single process on each compute node.\n
 values(topo) gives the ids of all processes running on each compute node.
@@ -93,7 +93,7 @@ end
 # CHUNKING OF ARRAYS
 
 function chunkit(axlen::Int, ncomps::Int)
-    
+
     chunksz = map(Int64, zeros(ncomps))
 
     for i in 1:axlen
@@ -115,9 +115,9 @@ function broadcast_shared(topo, elty_, value, symb)
 
     # SHAPE
     T,V = size(value)
- 
+
     # CREATE ON A SINGLE PROCESS ON EACH NODE
-    remote_refs = sow(reps, symb, :( copy!(SharedArray($elty_, ($T, $V), pids=[$topo[myid()]]), $value) ));
+    remote_refs = sow(reps_, symb, :( copy!(SharedArray{$elty_}(($T, $V), pids= topo[myid()]), $value) ));
 
     # MAKE ARRAY ACCESSIBLE ON ALL OTHER PROCS ON NODE
     @sync for r in reps_
@@ -126,7 +126,3 @@ function broadcast_shared(topo, elty_, value, symb)
         end
     end
 end
-
-
-
-
